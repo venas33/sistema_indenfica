@@ -1,0 +1,12 @@
+specVersion: "v1beta"
+serviceId: "sistema-qrcod"
+location: "us-central1"
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "fdcdb"
+      cloudSql:
+        instanceId: "sistema-qrcod-fdc"
+      # schemaValidation: "COMPATIBLE"
+connectorDirs: ["./connector"]
