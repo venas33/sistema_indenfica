@@ -6,13 +6,13 @@ const qrcode = require("qrcode");
 const cloudinary = require("cloudinary").v2;
 const serviceAccount = require("./firebase-config.json");
 
-// Configurar Firebase
+
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 const db = admin.firestore();
 
-// Configurar Cloudinary (usar variáveis de ambiente!)
+
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
   api_key: process.env.CLOUD_API_KEY,
@@ -25,10 +25,10 @@ const PORT = 5001;
 app.use(cors());
 app.use(express.json());
 
-// Configurar upload de arquivos com Multer
+
 const upload = multer({ storage: multer.memoryStorage() });
 
-// Rota de Cadastro
+
 app.post("/cadastrar", upload.single("foto"), async (req, res) => {
   try {
     const { nome, cpf, telefone, checkboxSelecionado } = req.body;
@@ -37,11 +37,11 @@ app.post("/cadastrar", upload.single("foto"), async (req, res) => {
       return res.status(400).json({ error: "Todos os campos são obrigatórios!" });
     }
 
-    // Upload da imagem no Cloudinary
+    
     const base64Image = `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`;
     const result = await cloudinary.uploader.upload(base64Image, { folder: "carnaval" });
 
-    // Dados do usuário
+   
     const userData = {
       nome,
       cpf,
@@ -50,12 +50,12 @@ app.post("/cadastrar", upload.single("foto"), async (req, res) => {
       foto: result.secure_url,
     };
 
-    // Salvar no Firestore
+   
     const ref = await db.collection("usuarios").add(userData);
     const userUrl = `http://localhost:3000/usuario/${ref.id}`;
     const qrCodeUrl = await qrcode.toDataURL(userUrl);
 
-    // Atualizar com o QR Code
+  
     await db.collection("usuarios").doc(ref.id).update({ qrCode: qrCodeUrl });
 
     res.json({ qrCode: qrCodeUrl, url: userUrl });
@@ -65,7 +65,7 @@ app.post("/cadastrar", upload.single("foto"), async (req, res) => {
   }
 });
 
-// Rota para obter os dados do usuário pelo ID
+
 app.get("/usuario/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -82,5 +82,5 @@ app.get("/usuario/:id", async (req, res) => {
   }
 });
 
-// Iniciar o servidor
-app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
+
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));

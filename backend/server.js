@@ -9,10 +9,10 @@ const { getStorage, ref, uploadBytesResumable, getDownloadURL } = require('fireb
 const QRCode = require('qrcode');
 const cloudinary = require("cloudinary").v2;
 
-// Carregar variáveis de ambiente
+
 dotenv.config();
 
-// Inicializar o Firebase Admin SDK
+
 const serviceAccount = require('./serviceAccountKey.json');
 
 admin.initializeApp({
@@ -22,7 +22,7 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// Inicializar o Firebase App SDK
+
 const firebaseConfig = {
   apiKey: process.env.FIREBASE_API_KEY,
   authDomain: process.env.FIREBASE_AUTH_DOMAIN,
@@ -35,7 +35,7 @@ const firebaseConfig = {
 const firebaseApp = initializeApp(firebaseConfig);
 const storage = getStorage(firebaseApp);
 
-// Configurar Cloudinary (usar variáveis de ambiente!)
+
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
@@ -46,15 +46,15 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Configuração do multer para upload de imagens
+
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: {
-    fileSize: 5 * 1024 * 1024, // Limite de 5MB
+    fileSize: 5 * 1024 * 1024, 
   },
 });
 
-// Rota para adicionar um usuário
+
 app.post('/add-user', upload.single('foto'), async (req, res) => {
   try {
     const { cpf, nome, email, celular, categoria } = req.body;
@@ -64,14 +64,14 @@ app.post('/add-user', upload.single('foto'), async (req, res) => {
       return res.status(400).send({ error: 'Todos os campos são obrigatórios, exceto a foto' });
     }
 
-    // Verificar se o usuário já existe
+  
     const userRef = db.collection('users').doc(cpf);
     const docSnap = await userRef.get();
     if (docSnap.exists) {
       return res.status(400).send({ error: 'Usuário com este CPF já está cadastrado' });
     }
 
-    // Gerar o QR Code
+    
     const FotoCadastro = `http://localhost:3000/usuario/${cpf}`;
     const qrCodeDataUrl = await QRCode.toDataURL(FotoCadastro);
 
@@ -90,7 +90,7 @@ app.post('/add-user', upload.single('foto'), async (req, res) => {
       qrCodeImageUrl = uploadResult.secure_url;
     }
 
-    // Adicionar os dados do usuário ao Firestore
+   
     await userRef.set({
       cpf,
       nome,
@@ -106,11 +106,11 @@ app.post('/add-user', upload.single('foto'), async (req, res) => {
   }
 });
 
-// Rota para listar usuários
+
 app.get('/users', async (req, res) => {
   try {
     const snapshot = await db.collection('users').get();
-    console.log(snapshot.docs.length); // Deve exibir a quantidade de usuários
+    console.log(snapshot.docs.length); 
     const users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     res.status(200).send(users);
   } catch (error) {
@@ -118,7 +118,6 @@ app.get('/users', async (req, res) => {
   }
 });
 
-// Rota para obter dados do usuário pelo CPF
 app.get('/usuario/:cpf', async (req, res) => {
   const { cpf } = req.params;
 
@@ -137,7 +136,7 @@ app.get('/usuario/:cpf', async (req, res) => {
   }
 });
 
-// Iniciar o servidor
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
