@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "jest",
+    "start": "node  ./server.cjs"
   },
   "keywords": [],
   "author": "",
@@ -20,5 +20,11 @@
     "multer-storage-cloudinary": "^4.0.0",
     "qrcode": "^1.5.4"
   },
-  "description": ""
+  "description": "",
+  "type": "module",
+  "devDependencies": {
+    "@testing-library/jest-dom": "^5.0.0",
+    "@testing-library/react": "^13.0.0",
+    "jest": "^29.0.0"
+  }
 }
