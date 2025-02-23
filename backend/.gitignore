@@ -68,6 +68,6 @@ node_modules/
 .dataconnect
 
 # Sensitive files
-serviceAccountKey.json
+.serviceAccountKey.json
 cloudinary.js
 dataconnect-generated/
