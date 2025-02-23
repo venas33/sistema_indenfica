@@ -1,10 +1,13 @@
 {
+  "homepage": "https://vennas.github.io/sistema-indentifica",
   "name": "backend",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "start": "node  ./server.cjs"
+    "start": "node  ./server.cjs",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
   },
   "keywords": [],
   "author": "",
